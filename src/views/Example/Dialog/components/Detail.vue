@@ -22,7 +22,7 @@ defineProps({
 
 <template>
   <Descriptions :schema="detailSchema" :data="currentRow || {}">
-    <template #importance="{ row }: { row: TableData }">
+    <template #importance="{ row }">
       <ElTag :type="row.importance === 1 ? 'success' : row.importance === 2 ? 'warning' : 'danger'">
         {{
           row.importance === 1
@@ -34,7 +34,7 @@ defineProps({
       </ElTag>
     </template>
 
-    <template #content="{ row }: { row: TableData }">
+    <template #content="{ row }">
       <div v-html="row.content"></div>
     </template>
   </Descriptions>

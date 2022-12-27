@@ -36,7 +36,7 @@ useEmitt({
   name: 'getList',
   callback: (type: string) => {
     if (type === 'add') {
-      tableObject.currentPage = 1
+      tableObject.pageIndex = 1
     }
     getList()
   }
@@ -140,7 +140,7 @@ const action = (row: TableData, type: string) => {
 
     <Table
       v-model:pageSize="tableObject.pageSize"
-      v-model:currentPage="tableObject.currentPage"
+      v-model:currentPage="tableObject.pageIndex"
       :columns="allSchemas.tableColumns"
       :data="tableObject.tableList"
       :loading="tableObject.loading"

@@ -47,7 +47,7 @@ const schema = reactive<DescriptionsSchema[]>([
 
 <template>
   <Descriptions :schema="schema" :data="currentRow || {}">
-    <template #importance="{ row }: { row: TableData }">
+    <template #importance="{ row }">
       <ElTag :type="row.importance === 1 ? 'success' : row.importance === 2 ? 'warning' : 'danger'">
         {{
           row.importance === 1
@@ -59,7 +59,7 @@ const schema = reactive<DescriptionsSchema[]>([
       </ElTag>
     </template>
 
-    <template #content="{ row }: { row: TableData }">
+    <template #content="{ row }">
       <div v-html="row.content"></div>
     </template>
   </Descriptions>
