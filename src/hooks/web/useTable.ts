@@ -105,7 +105,7 @@ export const useTable = <T = any>(config?: UseTableConfig<T>) => {
   const delData = async (ids: string[] | number[]) => {
     const res = await (config?.delListApi && config?.delListApi(ids))
     if (res) {
-      ElMessage.success(t('common.delSuccess'))
+      ElMessage.warning(res.msg)
 
       // 计算出临界点
       const pageIndex =
@@ -172,9 +172,11 @@ export const useTable = <T = any>(config?: UseTableConfig<T>) => {
           confirmButtonText: t('common.delOk'),
           cancelButtonText: t('common.delCancel'),
           type: 'warning'
-        }).then(async () => {
-          await delData(ids)
         })
+          .then(async () => {
+            await delData(ids)
+          })
+          .catch(() => {})
       } else {
         await delData(ids)
       }
