@@ -13,10 +13,6 @@ import { useTable } from '@/hooks/web/useTable'
 import { TableColumn } from '@/types/table'
 
 const { t } = useI18n()
-const getMenuTree = async () => {
-  const res = await searchMenuTreeApi()
-  return res.data.tree
-}
 
 const crudSchemas = reactive<CrudSchema[]>([
   {
@@ -40,7 +36,9 @@ const crudSchemas = reactive<CrudSchema[]>([
           checkStrictly: true
         }
       },
-      api: getMenuTree
+      api: async () => {
+        return (await searchMenuTreeApi()).data.tree
+      }
     }
   },
   {
