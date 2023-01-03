@@ -1,6 +1,6 @@
 export default {
   common: {
-    // 创建、删除、修改打开对话框。创建、修改对话框得按钮是提交和取消，因为是提交表单。
+    // 创建、删除、修改打开对话框。创建、修改对话框的按钮是提交和取消，因为是提交表单。
     // 删除对话框的按钮是确定和取消。如果关闭对话框没有逻辑，那就是关闭
     create: '创建',
     delete: '删除',
@@ -482,7 +482,7 @@ export default {
   menu: {
     create: '创建菜单',
     parentId: '上级菜单',
-    menuCode: '菜单编号',
+    permissionMark: '权限标识',
     menuName: '菜单名称',
     menuType: '菜单类型',
     page: '页面',

@@ -122,7 +122,7 @@ export default [
     response: () => {
       return {
         code: result_code,
-        msg: '创建成功'
+        msg: '演示模式，请勿当真'
       }
     }
   },
@@ -133,7 +133,7 @@ export default [
     response: () => {
       return {
         code: result_code,
-        msg: '删除成功'
+        msg: '演示模式，请勿当真'
       }
     }
   }

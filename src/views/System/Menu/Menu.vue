@@ -52,7 +52,7 @@ const crudSchemas = reactive<CrudSchema[]>([
   },
   {
     field: 'menuCode',
-    label: t('menu.menuCode'),
+    label: t('menu.permissionMark'),
     form: {
       colProps: {
         span: 24
@@ -136,7 +136,7 @@ const createMenu = async () => {
       if (res?.code) {
         dialogVisible.value = false
         getList()
-        ElMessage.success(res.msg)
+        ElMessage.warning(res.msg)
       }
     }
   })
