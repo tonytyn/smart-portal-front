@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { h, ref, unref, reactive } from 'vue'
-import { ElButton, ElTag } from 'element-plus'
+import { ElButton, ElTag, ElMessage } from 'element-plus'
 import { ContentWrap } from '@/components/ContentWrap'
 import { Search } from '@/components/Search'
 import { Dialog } from '@/components/Dialog'
@@ -11,7 +11,8 @@ import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
 import { TableColumn } from '@/types/table'
 import Create from './components/Create.vue'
 import Detail from './components/Detail.vue'
-import { getUserListApi, createUserApi, deleteUserApi } from '@/api/user'
+import { getUserListApi, createUserApi, deleteUserApi, updateUserApi } from '@/api/user'
+import { getRoleListApi } from '@/api/role'
 import { User } from '@/api/user/types'
 
 const { t } = useI18n()
@@ -33,10 +34,6 @@ const crudSchemas = reactive<CrudSchema[]>([
     label: t('user.username'),
     search: {
       show: true
-    },
-
-    detail: {
-      span: 24
     }
   },
   {
@@ -51,6 +48,38 @@ const crudSchemas = reactive<CrudSchema[]>([
     field: 'email',
     label: t('user.email')
   },
+  {
+    field: 'roles',
+    label: t('user.roles'),
+    table: {
+      show: false
+    },
+    form: {
+      value: [3], // 默认值
+      colProps: {
+        span: 24
+      },
+      component: 'Select',
+      componentProps: {
+        style: {
+          width: '100%'
+        },
+        multiple: true,
+        valueKey: 'id',
+        optionsAlias: {
+          labelField: 'roleName',
+          valueField: 'id'
+        }
+      },
+      api: async () => {
+        return (await getRoleListApi(null)).data.list
+      }
+    },
+    detail: {
+      span: 24
+    }
+  },
+
   {
     field: 'state',
     label: t('user.state'),
@@ -116,22 +145,32 @@ const openDialog = (type: string, row: User | null) => {
   dialogVisible.value = true
 }
 
-const CreateRef = ref<ComponentRef<typeof Create>>()
+const createRef = ref<ComponentRef<typeof Create>>()
 
 const createLoading = ref(false)
 
 const handleCreate = async () => {
-  const Create = unref(CreateRef)
-  await Create?.elFormRef?.validate(async (isValid) => {
+  const create = unref(createRef)
+  await create?.elFormRef?.validate(async (isValid) => {
     if (isValid) {
       createLoading.value = true
-      const data = (await Create?.getFormData()) as User
-      const res = await createUserApi(data)
-        .catch(() => {})
-        .finally(() => {
-          createLoading.value = false
-        })
+      const data = (await create?.getFormData()) as User
+      let res: void | IResponse<any>
+      if (dialogType.value === 'create') {
+        res = await createUserApi(data)
+          .catch(() => {})
+          .finally(() => {
+            createLoading.value = false
+          })
+      } else {
+        res = await updateUserApi(data)
+          .catch(() => {})
+          .finally(() => {
+            createLoading.value = false
+          })
+      }
       if (res) {
+        ElMessage.warning(res.msg)
         dialogVisible.value = false
         tableObject.pageIndex = 1
         getList()
@@ -142,15 +181,11 @@ const handleCreate = async () => {
 
 const delLoading = ref(false)
 
-const delData = async (row: User | null, multiple: boolean) => {
+const delData = async (row: User) => {
   tableObject.currentRow = row
-  const { delList, getSelections } = methods
-  const selections = await getSelections()
+  const { delList } = methods
   delLoading.value = true
-  await delList(
-    multiple ? selections.map((v) => v.id) : [tableObject.currentRow?.id as string],
-    multiple
-  ).finally(() => {
+  await delList([row.id], false).finally(() => {
     delLoading.value = false
   })
 }
@@ -193,7 +228,7 @@ const delData = async (row: User | null, multiple: boolean) => {
         >
           {{ t('exampleDemo.detail') }}
         </ElButton>
-        <ElButton type="danger" v-hasPermi="['example:dialog:delete']" @click="delData(row, false)">
+        <ElButton type="danger" :loading="delLoading" @click="delData(row)">
           {{ t('exampleDemo.del') }}
         </ElButton>
       </template>
@@ -203,7 +238,7 @@ const delData = async (row: User | null, multiple: boolean) => {
   <Dialog v-model="dialogVisible" :title="dialogTitle">
     <Create
       v-if="dialogType === 'create' || dialogType === 'update'"
-      ref="CreateRef"
+      ref="createRef"
       :form-schema="allSchemas.formSchema"
       :current-row="tableObject.currentRow"
     />

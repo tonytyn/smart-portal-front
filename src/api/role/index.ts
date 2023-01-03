@@ -10,6 +10,10 @@ export const deleteRoleApi = (id: string): Promise<IResponse> => {
 export const getRoleListApi = (params: any): Promise<IResponse> => {
   return request.get({ url: '/role/list', params })
 }
+export const getRoleByIdApi = (id: string): Promise<IResponse> => {
+  return request.get({ url: '/role/detail', params: { id } })
+}
+
 export const getBoundMenuApi = (data: RoleMenu[]): Promise<IResponse> => {
   return request.get({ url: '/role/bound-menus', data })
 }

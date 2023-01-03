@@ -4,5 +4,6 @@ export type User = {
   account: string
   phoneNumber: string
   email: string
+  roles: number[]
   state: string
 }

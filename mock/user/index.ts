@@ -11,6 +11,7 @@ const List: {
   account: string
   phoneNumber: string
   email: string
+  roles?: number[]
   state: string
   permissions: string | string[]
 }[] = [
@@ -20,6 +21,7 @@ const List: {
     account: 'admin',
     phoneNumber: '13828856999',
     email: '123@ccc.com',
+    roles: [1],
     state: 'enable',
     permissions: ['*.*.*']
   },
@@ -38,6 +40,7 @@ const List: {
     account: 'zhangsan',
     phoneNumber: '13628856563',
     email: '345@ddd.com',
+    roles: [2, 3],
     state: 'enable',
     permissions: ['example:dialog:create', 'example:dialog:delete']
   },
@@ -83,6 +86,36 @@ export default [
           total: mockList.length,
           list: pageList
         }
+      }
+    }
+  },
+  {
+    url: '/user/create',
+    method: 'post',
+    response: () => {
+      return {
+        code: result_code,
+        msg: '演示模式，请勿当真'
+      }
+    }
+  },
+  {
+    url: '/user/update',
+    method: 'put',
+    response: () => {
+      return {
+        code: result_code,
+        msg: '演示模式，请勿当真'
+      }
+    }
+  },
+  {
+    url: '/user/delete',
+    method: 'delete',
+    response: () => {
+      return {
+        code: result_code,
+        msg: '演示模式，请勿当真'
       }
     }
   },

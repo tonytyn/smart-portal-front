@@ -518,7 +518,6 @@ const timeout = 1000
 // ]
 const roleList: {
   id: number
-
   roleName: string
   createUserAccount: string
   createUsername: string
@@ -526,15 +525,20 @@ const roleList: {
 }[] = [
   {
     id: 1,
-
-    roleName: '超级管理员',
+    roleName: '系统管理员',
     createUserAccount: 'admin',
     createUsername: '系统自带',
     createTime: '2022-11-22 11:22:33'
   },
   {
     id: 2,
-
+    roleName: '应用管理员',
+    createUserAccount: 'admin',
+    createUsername: '系统自带',
+    createTime: '2022-11-22 11:22:33'
+  },
+  {
+    id: 3,
     roleName: '普通用户',
     createUserAccount: 'admin',
     createUsername: '系统自带',
@@ -542,6 +546,32 @@ const roleList: {
   }
 ]
 export default [
+  // 列表接口
+  {
+    url: '/role/list',
+    method: 'get',
+    timeout,
+    response: () => {
+      return {
+        code: result_code,
+        data: { list: roleList, total: roleList.length }
+      }
+    }
+  },
+  {
+    url: '/role/detail',
+    method: 'get',
+    timeout,
+    response: ({ query }) => {
+      const { id } = query
+      if (id) {
+        return {
+          code: result_code,
+          data: roleList.find((element) => element.id == id)
+        }
+      }
+    }
+  },
   {
     url: '/role/create',
     method: 'post',
@@ -564,28 +594,7 @@ export default [
       }
     }
   },
-  // 列表接口
-  {
-    url: '/role/list',
-    method: 'get',
-    timeout,
-    // response: ({ query }) => {
-    //   const { roleName } = query
-    //   return {
-    //     code: result_code,
-    //     data: roleName === 'admin' ? adminList : testList
-    //   }
-    // }
-    response: () => {
-      return {
-        code: result_code,
-        data: {
-          list: roleList,
-          total: roleList.length
-        }
-      }
-    }
-  },
+
   {
     url: '/role/bound-menus',
     method: 'get',

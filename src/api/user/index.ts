@@ -7,9 +7,9 @@ export const getUserListApi = (params: any): Promise<IResponse> => {
 export const createUserApi = (data: Partial<User>): Promise<IResponse> => {
   return request.post({ url: '/user/create', data })
 }
-export const deleteUserApi = (params: any): Promise<IResponse> => {
-  return request.delete({ url: '/user/delete', params })
+export const deleteUserApi = (userIds: string[]): Promise<IResponse> => {
+  return request.delete({ url: '/user/delete', data: { userIds } })
 }
 export const updateUserApi = (data: Partial<User>): Promise<IResponse> => {
-  return request.delete({ url: '/user/update', data })
+  return request.put({ url: '/user/update', data })
 }

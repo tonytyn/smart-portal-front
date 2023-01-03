@@ -22,6 +22,7 @@ export default {
     createUserAccount: '创建人账号',
     createUsername: '创建人姓名',
     createTime: '创建时间',
+    delMessage: '是否删除该条数据？',
 
     //
     inputText: '请输入',
@@ -57,7 +58,7 @@ export default {
     reset: '重置',
     shrink: '收起',
     expand: '展开',
-    delMessage: '是否删除所选中数据？',
+
     delWarning: '提示',
     delOk: '确定',
     delCancel: '取消',
@@ -465,6 +466,7 @@ export default {
     account: '账号',
     phoneNumber: '电话',
     email: '邮箱',
+    roles: '角色列表',
     state: '状态'
   },
   role: {
