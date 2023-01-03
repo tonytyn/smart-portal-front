@@ -75,7 +75,6 @@ const { register, tableObject, methods } = useTable<Role>({
   }
 })
 const { getList } = methods
-console.log(tableObject.params)
 
 getList()
 
