@@ -51,7 +51,7 @@ const toDocument = () => {
         alt=""
         class="w-[calc(var(--logo-height)-25px)] rounded-[50%]"
       />
-      <span class="<lg:hidden text-14px pl-[5px] text-[var(--top-header-text-color)]">张三</span>
+      <span class="<lg:hidden text-14px pl-[5px] text-[var(--top-header-text-color)]">迪迦</span>
     </div>
     <template #dropdown>
       <ElDropdownMenu>
