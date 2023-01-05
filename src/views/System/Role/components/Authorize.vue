@@ -1,19 +1,26 @@
 <script setup lang="ts">
-import { ElButton, ElTag, ElRow, ElCol, ElDivider, ElMessage } from 'element-plus'
+import { h, ref, reactive, PropType } from 'vue'
+import { ElButton, ElMessage, ElTag } from 'element-plus'
 import { ContentWrap } from '@/components/ContentWrap'
 import { Search } from '@/components/Search'
 import { Table } from '@/components/Table'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useTable } from '@/hooks/web/useTable'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
-import { getUserListApi } from '@/api/user'
-import { getAuthorizedUserApi, bindUserApi, unBindUserApi } from '@/api/role'
+import { TableColumn } from '@/types/table'
+import { getUserListApi, bindUserApi, unBindUserApi } from '@/api/role'
 import { User } from '@/api/user/types'
-// import { Role } from '@/api/role/types'
-import { ref, reactive } from 'vue'
+import { Role } from '@/api/role/types'
 
 const { t } = useI18n()
-//初始化用户列表
+// 定义需要传递过来的参数
+const props = defineProps({
+  currentRole: {
+    type: Object as PropType<Nullable<Role>>,
+    default: () => null
+  }
+})
+//定义展示需要的字段
 const crudSchemas = reactive<CrudSchema[]>([
   {
     field: 'username',
@@ -41,12 +48,46 @@ const crudSchemas = reactive<CrudSchema[]>([
       show: false
     }
   },
-
+  {
+    field: 'authorizeState',
+    label: t('role.authorizeState'),
+    formatter: (_: Recordable, __: TableColumn, cellValue: string) => {
+      return h(
+        ElTag,
+        {
+          type: cellValue === 'authorized' ? 'success' : 'danger'
+        },
+        () => (cellValue === 'authorized' ? t('role.authorized') : t('role.unauthorized'))
+      )
+    },
+    search: {
+      show: true,
+      value: 'authorized',
+      component: 'Select',
+      componentProps: {
+        options: [
+          {
+            label: t('role.authorized'),
+            value: 'authorized'
+          },
+          {
+            label: t('role.unauthorized'),
+            value: 'unauthorized'
+          }
+        ]
+      }
+    },
+    form: {
+      show: false
+    },
+    detail: {
+      show: false
+    }
+  },
   {
     field: 'action',
     width: '260px',
-    label: t('tableDemo.action'),
-
+    label: t('common.operation'),
     form: {
       show: false
     },
@@ -55,8 +96,10 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   }
 ])
+const { allSchemas } = useCrudSchemas(crudSchemas)
 // 表头和内容对其方式
 const alignType = ref('center')
+
 const { register, tableObject, methods } = useTable<User>({
   getListApi: getUserListApi,
   response: {
@@ -65,71 +108,34 @@ const { register, tableObject, methods } = useTable<User>({
   }
 })
 
-const { allSchemas } = useCrudSchemas(crudSchemas)
-const { getList, setSearchParams } = methods
-getList()
+const { setSearchParams } = methods
+// 默认查询已授权用户列表
+setSearchParams({ roleId: props.currentRole?.id, authorizeState: 'authorized' })
 
-// 初始化已授权
-const props = defineProps({
-  currentRole: {
-    type: Object,
-    default: () => null
-  }
-})
-const authorized = reactive({ users: [] as Array<User> })
-const loading = ref(false)
-async function searchAuthorizedUser(roleId: string) {
-  loading.value = true
-  const res = await getAuthorizedUserApi(roleId)
-  loading.value = false
+// 授权
+const handleBindUser = async (userId: string) => {
+  const res = await bindUserApi({ userId: userId, roleId: props.currentRole!.id })
   if (res.code) {
-    authorized.users = res.data
+    ElMessage.warning(res.msg)
   }
 }
-searchAuthorizedUser(props.currentRole.id)
-
-const bindLoading = ref(false)
-
-const handleAuthorize = async (row: User) => {
-  bindLoading.value = true
-  const res = await bindUserApi({ userId: row.id, roleId: props.currentRole.id }).finally(() => {
-    bindLoading.value = false
-  })
+// 取消授权
+const handleUnBindUser = async (userId: string) => {
+  const res = await unBindUserApi({ userId: userId, roleId: props.currentRole!.id })
   if (res.code) {
-    ElMessage.success('操作成功！')
-  }
-}
-// 处理解绑事件
-async function handleUnBind(userId: string) {
-  const res = await unBindUserApi({ userId: userId, roleId: props.currentRole.id })
-  if (res.code) {
-    ElMessage.success('操作成功！')
-    searchAuthorizedUser(props.currentRole.id)
+    ElMessage.warning(res.msg)
+    // setSearchParams({ roleId: props.currentRole?.id, authorizeState: 'authorized' })
   }
 }
 </script>
 
 <template>
-  <ContentWrap :title="t('role.authorized')">
-    <el-row v-loading="loading">
-      <el-col>
-        <el-tag
-          v-for="user in authorized.users"
-          :key="user.id"
-          size="large"
-          closable
-          class="ml-2"
-          @close="handleUnBind(user.id)"
-        >
-          {{ user.username }}({{ user.account }})
-        </el-tag>
-      </el-col>
-    </el-row>
-    <el-divider />
+  <ContentWrap :title="t('role.currentRole') + ':' + currentRole!.roleName">
     <Search :schema="allSchemas.searchSchema" @search="setSearchParams" @reset="setSearchParams" />
     <Table
       :align="alignType"
       :header-align="alignType"
+      :selection="false"
       v-model:pageSize="tableObject.pageSize"
       v-model:pageIndex="tableObject.pageIndex"
       :columns="allSchemas.tableColumns"
@@ -142,11 +148,14 @@ async function handleUnBind(userId: string) {
     >
       <template #action="{ row }">
         <ElButton
-          type="danger"
-          v-hasPermi="['example:dialog:delete']"
-          @click="handleAuthorize(row)"
+          v-if="row.authorizeState === 'unauthorized'"
+          type="primary"
+          @click="handleBindUser(row.id)"
         >
-          {{ t('role.bindRole') }}
+          {{ t('role.bindUser') }}
+        </ElButton>
+        <ElButton v-else type="danger" @click="handleUnBindUser(row.id)">
+          {{ t('role.unbindUser') }}
         </ElButton>
       </template>
     </Table>

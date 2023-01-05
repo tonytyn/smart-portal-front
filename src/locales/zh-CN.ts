@@ -13,6 +13,7 @@ export default {
     createFailed: '创建失败!',
     deleteFailed: '删除失败!',
     updateFailed: '修改失败！',
+    operation: '操作',
     ok: '确定',
     cancel: '取消',
     submit: '提交',
@@ -472,12 +473,14 @@ export default {
   role: {
     create: '创建角色',
     roleName: '角色名称',
-    authorize: '授权管理',
     bindMenu: '绑定菜单',
-    bindRole: '授权',
-    authorized: '已授权用户',
-    unauthorized: '未授权用户',
-    currentRole: '当前角色'
+    authorize: '授权管理',
+    currentRole: '当前角色',
+    authorizeState: '授权状态',
+    authorized: '已授权',
+    unauthorized: '未授权',
+    bindUser: '授权',
+    unbindUser: '取消授权'
   },
   menu: {
     create: '创建菜单',

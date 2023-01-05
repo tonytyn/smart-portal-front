@@ -8,6 +8,7 @@ export type Role = {
 export type RoleMenu = {
   roleId: string
   menuId: string
+  whetherAll: boolean
 }
 export type UserRole = {
   userId: string

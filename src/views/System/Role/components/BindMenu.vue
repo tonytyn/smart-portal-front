@@ -2,31 +2,43 @@
 import { ref, unref, reactive } from 'vue'
 import { ElTree } from 'element-plus'
 import { searchMenuTreeApi } from '@/api/menu'
+import { getBoundedMenuApi } from '@/api/role'
+
+const props = defineProps({
+  roleId: {
+    type: String,
+    default: ''
+  }
+})
+
 const treeData = reactive({ data: [] })
+const defaultCheckedKeys = reactive({ ids: [] })
 const loading = ref(false)
 const initTreeData = async () => {
   loading.value = true
   const res = await searchMenuTreeApi()
   loading.value = false
   if (res.code) {
-    treeData.data = res.data
+    treeData.data = res.data.tree
   }
+  const res2 = await getBoundedMenuApi(props.roleId)
+  defaultCheckedKeys.ids = res2.data
 }
 initTreeData()
-// const treeRef = ref()
-// ElForm实例
 const treeRef = ref()
-const getCheckedNodes = () => {
-  const tree = unref(treeRef)
-  const nodes = tree!.getCheckedNodes(false, true)
-  return nodes
+const getCheckedKeys = () => {
+  return unref(treeRef).getCheckedKeys()
 }
-const props = {
+const getHalfCheckedKeys = () => {
+  return unref(treeRef).getHalfCheckedKeys()
+}
+const treeProps = {
   label: 'menuName'
 }
 
 defineExpose({
-  getCheckedNodes
+  getCheckedKeys,
+  getHalfCheckedKeys
 })
 </script>
 
@@ -36,8 +48,9 @@ defineExpose({
     v-loading="loading"
     :data="treeData.data"
     node-key="id"
-    :props="props"
+    :props="treeProps"
     show-checkbox
     default-expand-all
+    :default-checked-keys="defaultCheckedKeys.ids"
   />
 </template>

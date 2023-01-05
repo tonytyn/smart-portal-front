@@ -1,24 +1,34 @@
 <script setup lang="ts">
+import { h, ref, unref, reactive } from 'vue'
+import { ElTag, ElButton, ElMessage } from 'element-plus'
 import { ContentWrap } from '@/components/ContentWrap'
 import { Dialog } from '@/components/Dialog'
 import { useI18n } from '@/hooks/web/useI18n'
-import { ElButton, ElMessage } from 'element-plus'
 import { Table } from '@/components/Table'
-import { createRoleApi, deleteRoleApi, getRoleListApi, bindMenuApi } from '@/api/role'
+import { bindMenuApi, createRoleApi, deleteRoleApi, getRoleListApi } from '@/api/role'
 import { useTable } from '@/hooks/web/useTable'
 import { Role, RoleMenu } from '@/api/role/types'
-import { Menu } from '@/api/menu/types'
-import { ref, unref, reactive } from 'vue'
 import Create from './components/Create.vue'
 import BindMenu from './components/BindMenu.vue'
 import Authorize from './components/Authorize.vue'
-
+import { TableColumn } from '@/types/table'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
-// import { TableColumn } from '@/types/table'
+
 const { t } = useI18n()
 
 // 字段设置
 const crudSchemas = reactive<CrudSchema[]>([
+  {
+    field: 'index',
+    label: t('tableDemo.index'),
+    type: 'index',
+    form: {
+      show: false
+    },
+    detail: {
+      show: false
+    }
+  },
   {
     field: 'roleName',
     label: t('role.roleName'),
@@ -29,15 +39,17 @@ const crudSchemas = reactive<CrudSchema[]>([
     }
   },
   {
-    field: 'createUserAccount',
-    label: t('common.createUserAccount'),
-    form: {
-      show: false
-    }
-  },
-  {
-    field: 'createUsername',
-    label: t('common.createUsername'),
+    field: 'state',
+    label: t('user.state'),
+    formatter: (_: Recordable, __: TableColumn, cellValue: string) => {
+      return h(
+        ElTag,
+        {
+          type: cellValue === 'enable' ? 'success' : 'danger'
+        },
+        () => (cellValue === 'enable' ? t('common.enable') : t('common.disable'))
+      )
+    },
     form: {
       show: false
     }
@@ -78,20 +90,6 @@ const { getList } = methods
 
 getList()
 
-// 执行删除
-const delLoading = ref(false)
-
-const delData = async (row: Role) => {
-  tableObject.currentRow = row
-  delLoading.value = true
-  const res = await deleteRoleApi(row.id).finally(() => {
-    delLoading.value = false
-  })
-  if (res.code) {
-    ElMessage.success('删除成功！')
-  }
-  getList()
-}
 // 对话框属性控制
 const dialogVisible = ref(false) //对话框开关
 const dialogType = ref('') // 对话框类型
@@ -127,10 +125,25 @@ const save = async () => {
         dialogVisible.value = false
         tableObject.pageIndex = 1
         getList()
-        ElMessage.success('创建成功')
+        ElMessage.warning(res.msg)
       }
     }
   })
+}
+
+// 执行删除
+const delLoading = ref(false)
+
+const delData = async (row: Role) => {
+  tableObject.currentRow = row
+  delLoading.value = true
+  const res = await deleteRoleApi(row.id).finally(() => {
+    delLoading.value = false
+  })
+  if (res.code) {
+    ElMessage.warning(res.msg)
+  }
+  getList()
 }
 
 // 打开绑定菜单对话框
@@ -144,14 +157,28 @@ const openBindMenuDialog = (row: Role) => {
 }
 
 // 执行更新菜单
-const bindMenuRef = ref()
+const menuTreeRef = ref()
 const bindMenuLoading = ref(false)
 const updateMenus = async () => {
   bindMenuLoading.value = true
-  const nodes = bindMenuRef.value.getCheckedNodes()
+  const menuTree = unref(menuTreeRef)
+  const checkedKeys: string[] = menuTree.getCheckedKeys()
+  const halfCheckedKeys: string[] = menuTree.getHalfCheckedKeys()
+
   let roleMenus: RoleMenu[] = []
-  nodes.forEach((element: Menu) => {
-    roleMenus.push({ roleId: tableObject.currentRow?.id as string, menuId: element.id })
+  checkedKeys.forEach((menuId) => {
+    roleMenus.push({
+      roleId: tableObject.currentRow?.id as string,
+      menuId: menuId,
+      whetherAll: true
+    })
+  })
+  halfCheckedKeys.forEach((menuId) => {
+    roleMenus.push({
+      roleId: tableObject.currentRow?.id as string,
+      menuId: menuId,
+      whetherAll: false
+    })
   })
   const res = await bindMenuApi(roleMenus)
     .catch((err) => err)
@@ -160,14 +187,14 @@ const updateMenus = async () => {
     })
 
   if (res.code) {
-    ElMessage.success('操作成功！')
+    ElMessage.warning(res.msg)
   }
   dialogVisible.value = false
 }
 // 打开授权管理对话框
 const openAuthorizeDialog = (row: Role) => {
   tableObject.currentRow = row
-  dialogTitle.value = `${t('role.authorize')}: ${row.roleName}` //这里注意，需要跟国际化配置关联
+  dialogTitle.value = t('role.authorize') //这里注意，需要跟国际化配置关联
   dialogType.value = 'authorize'
   dialogHeight.value = '500px'
   dialogWidth.value = '68%'
@@ -219,11 +246,12 @@ const handleDialogClose = () => {
     :width="dialogWidth"
   >
     <Create v-if="dialogType === 'create'" ref="createRef" :form-schema="allSchemas.formSchema" />
-    <BindMenu v-if="dialogType === 'bindMenu'" ref="bindMenuRef" />
-    <Authorize
-      v-if="dialogType === 'authorize'"
-      :currentRole="(tableObject.currentRow as Object)"
+    <BindMenu
+      v-if="dialogType === 'bindMenu'"
+      ref="menuTreeRef"
+      :role-id="tableObject.currentRow?.id"
     />
+    <Authorize v-if="dialogType === 'authorize'" :currentRole="tableObject.currentRow" />
     <template #footer>
       <ElButton
         v-if="dialogType === 'create'"
@@ -236,12 +264,12 @@ const handleDialogClose = () => {
       <ElButton
         v-if="dialogType === 'bindMenu'"
         type="primary"
-        :loading="createLoading"
+        :loading="bindMenuLoading"
         @click="updateMenus"
       >
         {{ t('common.ok') }}
       </ElButton>
-      <ElButton @click="handleDialogClose">{{ t('common.cancel') }}</ElButton>
+      <ElButton @click="handleDialogClose">{{ t('common.close') }}</ElButton>
     </template>
   </Dialog>
 </template>

@@ -27,22 +27,12 @@ const menuTree: Menu[] = [
         parentId: '11',
         menuCode: 'desc',
         menuName: '系统介绍',
-        menuType: 'button',
-        disabled: true,
+        menuType: 'page',
         children: []
-      }
-    ]
-  },
-  {
-    id: '22',
-    parentId: '0',
-    menuCode: 'app-list',
-    menuName: '应用列表',
-    menuType: 'page',
-    children: [
+      },
       {
-        id: '221',
-        parentId: '22',
+        id: '112',
+        parentId: '11',
         menuCode: 'list',
         menuName: '应用列表',
         menuType: 'page',
@@ -50,6 +40,7 @@ const menuTree: Menu[] = [
       }
     ]
   },
+
   {
     id: '33',
     parentId: '0',

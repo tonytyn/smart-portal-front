@@ -517,33 +517,42 @@ const timeout = 1000
 //   '/error/500-demo'
 // ]
 const roleList: {
-  id: number
+  id: string
   roleName: string
-  createUserAccount: string
-  createUsername: string
+  state: string
   createTime: string
 }[] = [
   {
-    id: 1,
+    id: '1',
     roleName: '系统管理员',
-    createUserAccount: 'admin',
-    createUsername: '系统自带',
+    state: 'enable',
     createTime: '2022-11-22 11:22:33'
   },
   {
-    id: 2,
+    id: '2',
     roleName: '应用管理员',
-    createUserAccount: 'admin',
-    createUsername: '系统自带',
+    state: 'enable',
     createTime: '2022-11-22 11:22:33'
   },
   {
-    id: 3,
+    id: '3',
     roleName: '普通用户',
-    createUserAccount: 'admin',
-    createUsername: '系统自带',
+    state: 'enable',
     createTime: '2022-11-22 11:22:33'
   }
+]
+const userList: {
+  id: string
+  account: string
+  username: string
+  authorizeState: string
+}[] = [
+  { id: '1', account: 'test1', username: '测试一', authorizeState: 'authorized' },
+  { id: '2', account: 'test2', username: '测试二', authorizeState: 'authorized' },
+  { id: '3', account: 'test3', username: '测试三', authorizeState: 'unauthorized' },
+  { id: '4', account: 'test4', username: '测试四', authorizeState: 'authorized' },
+  { id: '5', account: 'test5', username: '测试五', authorizeState: 'authorized' },
+  { id: '6', account: 'test6', username: '测试六', authorizeState: 'authorized' }
 ]
 export default [
   // 列表接口
@@ -579,7 +588,7 @@ export default [
     response: () => {
       return {
         code: result_code,
-        data: '假装操作成功了'
+        msg: '演示模式，请勿当真'
       }
     }
   },
@@ -590,19 +599,19 @@ export default [
     response: () => {
       return {
         code: result_code,
-        data: '假装操作成功了'
+        msg: '演示模式，请勿当真'
       }
     }
   },
 
   {
-    url: '/role/bound-menus',
+    url: '/role/bounded-menus',
     method: 'get',
     timeout,
     response: () => {
       return {
         code: result_code,
-        data: '假装操作成功了'
+        data: [111, 331]
       }
     }
   },
@@ -613,36 +622,34 @@ export default [
     response: () => {
       return {
         code: result_code,
-        data: '假装操作成功了'
+        msg: '演示模式，请勿当真'
       }
     }
   },
   {
-    url: '/role/authorized-users',
+    url: '/role/users',
     method: 'get',
     timeout,
-    response: () => {
+    response: ({ query }) => {
+      const { authorizeState } = query
+      const resultList = userList.filter((element) => element.authorizeState === authorizeState)
       return {
         code: result_code,
-        data: [
-          { id: '1', account: 'test1', username: '测试一' },
-          { id: '2', account: 'test2', username: '测试二' },
-          { id: '3', account: 'test3', username: '测试三' },
-          { id: '4', account: 'test4', username: '测试四' },
-          { id: '5', account: 'test5', username: '测试五' },
-          { id: '6', account: 'test6', username: '测试六' }
-        ]
+        data: {
+          list: resultList,
+          total: resultList.length
+        }
       }
     }
   },
   {
-    url: '/role/bind-sers',
+    url: '/role/bind-users',
     method: 'post',
     timeout,
     response: () => {
       return {
         code: result_code,
-        data: '假装操作成功了'
+        msg: '演示模式，请勿当真'
       }
     }
   },
@@ -653,7 +660,7 @@ export default [
     response: () => {
       return {
         code: result_code,
-        data: '假装操作成功了'
+        msg: '演示模式，请勿当真'
       }
     }
   }
