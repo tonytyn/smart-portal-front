@@ -6,7 +6,6 @@ import { PropType, reactive, watch } from 'vue'
 import { useValidator } from '@/hooks/web/useValidator'
 import { FormSchema } from '@/types/form'
 import { User } from '@/api/user/types'
-// import { ElSwitch } from 'element-plus'
 
 // const { t } = useI18n()
 

@@ -11,7 +11,7 @@ const List: {
   account: string
   phoneNumber: string
   email: string
-  roles?: number[]
+  roleIds?: string[]
   state: string
   permissions: string | string[]
 }[] = [
@@ -21,7 +21,7 @@ const List: {
     account: 'admin',
     phoneNumber: '13828856999',
     email: '123@ccc.com',
-    roles: [1],
+    roleIds: ['1'],
     state: 'enable',
     permissions: ['*.*.*']
   },
@@ -40,7 +40,7 @@ const List: {
     account: 'zhangsan',
     phoneNumber: '13628856563',
     email: '345@ddd.com',
-    roles: [2, 3],
+    roleIds: ['2', '3'],
     state: 'enable',
     permissions: ['example:dialog:create', 'example:dialog:delete']
   },

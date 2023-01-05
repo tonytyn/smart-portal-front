@@ -49,13 +49,13 @@ const crudSchemas = reactive<CrudSchema[]>([
     label: t('user.email')
   },
   {
-    field: 'roles',
+    field: 'roleIds',
     label: t('user.roles'),
     table: {
       show: false
     },
     form: {
-      value: [3], // 默认值
+      value: ['3'], // 默认值
       colProps: {
         span: 24
       },

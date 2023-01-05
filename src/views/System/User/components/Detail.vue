@@ -20,9 +20,9 @@ const props = defineProps({
 })
 const roleList = reactive<any[]>([])
 
-if (props.currentRow && props.currentRow.roles) {
-  props.currentRow!.roles.forEach(async (element: any) => {
-    const res = await getRoleByIdApi(element)
+if (props.currentRow && props.currentRow.roleIds) {
+  props.currentRow!.roleIds.forEach(async (roleId: any) => {
+    const res = await getRoleByIdApi(roleId)
     roleList.push(res.data)
   })
 }
@@ -35,7 +35,7 @@ if (props.currentRow && props.currentRow.roles) {
         {{ row.state === 'enable' ? t('common.enable') : t('common.disable') }}
       </ElTag>
     </template>
-    <template #roles>
+    <template #roleIds>
       <ElTag v-for="role in roleList" :key="role.id">
         {{ role.roleName }}
       </ElTag>
