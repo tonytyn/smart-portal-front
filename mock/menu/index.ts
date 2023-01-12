@@ -25,16 +25,8 @@ const menuTree: Menu[] = [
       {
         id: '111',
         parentId: '11',
-        menuCode: 'desc',
+        menuCode: 'introduction',
         menuName: '系统介绍',
-        menuType: 'page',
-        children: []
-      },
-      {
-        id: '112',
-        parentId: '11',
-        menuCode: 'list',
-        menuName: '应用列表',
         menuType: 'page',
         children: []
       }
@@ -44,18 +36,34 @@ const menuTree: Menu[] = [
   {
     id: '33',
     parentId: '0',
-    menuCode: 'manging',
-    menuName: '应用管理',
+    menuCode: 'app-center',
+    menuName: '应用中心',
     menuType: 'page',
     children: [
       {
+        id: '112',
+        parentId: '11',
+        menuCode: 'app-list',
+        menuName: '应用列表',
+        menuType: 'page',
+        children: []
+      },
+      {
         id: '331',
         parentId: '33',
-        menuCode: 'manging-app',
+        menuCode: 'app-management',
         menuName: '应用管理',
         menuType: 'page',
         children: []
       }
+      // {
+      //   id: '332',
+      //   parentId: '33',
+      //   menuCode: 'app-data',
+      //   menuName: '数据查看',
+      //   menuType: 'page',
+      //   children: []
+      // }
     ]
   },
   {

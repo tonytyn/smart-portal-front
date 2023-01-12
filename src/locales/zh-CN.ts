@@ -163,6 +163,10 @@ export default {
     exampleEdit: '综合示例 - 编辑',
     exampleDetail: '综合示例 - 详情',
     errorPage: '错误页面',
+    appCenter: '应用中心',
+    appList: '应用列表',
+    appManagement: '应用管理',
+
     system: '系统管理',
     user: '用户管理',
     role: '角色管理',

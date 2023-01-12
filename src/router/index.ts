@@ -110,6 +110,27 @@ export const asyncRouterMap: AppRouteRecordRaw[] = [
     ]
   },
   {
+    path: '/app-center',
+    component: Layout,
+    redirect: '/app-list',
+    name: 'AppCenter',
+    meta: {
+      title: t('router.appCenter'),
+      icon: 'ep:grid',
+      alwaysShow: true
+    },
+    children: [
+      {
+        path: 'app-list',
+        component: () => import('@/views/App/AppList/AppList.vue'),
+        name: 'AppList',
+        meta: {
+          title: t('router.appList')
+        }
+      }
+    ]
+  },
+  {
     path: '/system',
     component: Layout,
     redirect: '/system/user',
