@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { h, ref, unref, reactive } from 'vue'
-import { ElButton, ElTag, ElMessage } from 'element-plus'
+import { ElTag, ElMessage } from 'element-plus'
 import { ContentWrap } from '@/components/ContentWrap'
 import { Search } from '@/components/Search'
 import { Dialog } from '@/components/Dialog'
