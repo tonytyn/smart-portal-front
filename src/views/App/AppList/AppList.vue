@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Dialog } from '@/components/Dialog'
-import { useIcon } from '@/hooks/web/useIcon'
-const icon = useIcon({ icon: 'ep:collection' })
 const msg =
   '应用使用形式1：所有人无需申请即可使用2：用户自己申请，管理员同意后可以使用3：管理员邀请后可以使用'
 const desc =
@@ -36,7 +34,11 @@ const enter = () => {
 
                   <span class="brief">{{ desc }}</span>
                   <span>
-                    <el-link type="primary" @click="viewDetail">详情</el-link>
+                    <el-link type="primary" @click="viewDetail">
+                      <Icon icon="ep:view" />详情
+                    </el-link>
+                    <el-divider direction="vertical" />
+                    <el-link type="primary" @click="viewDetail">取消收藏</el-link>
                   </span>
                   <el-button @click="enter" type="primary">进入应用</el-button>
                 </el-space>
@@ -45,7 +47,7 @@ const enter = () => {
             <el-col v-for="index of 7" :key="index" :xs="24" :sm="12" :md="6" :lg="6" :xl="3">
               <el-card shadow="hover" class="mycard">
                 <el-space wrap fill>
-                  <span class="title" :icon="icon"> 考勤系统 </span>
+                  <span class="title"> 考勤系统 </span>
 
                   <span class="brief">{{ desc }}</span>
                   <span>
@@ -68,7 +70,13 @@ const enter = () => {
                   <span class="title"> 设备点检系统 </span>
                   <span class="brief">{{ desc }}</span>
                   <span>
-                    <el-link type="primary" @click="viewDetail">详情</el-link>
+                    <el-link type="primary" @click="viewDetail">
+                      <Icon icon="ep:view" />详情
+                    </el-link>
+                    <el-divider direction="vertical" />
+                    <el-link type="primary" @click="viewDetail">
+                      <Icon icon="ep:star" />收藏
+                    </el-link>
                   </span>
                   <el-button @click="enter" type="primary">进入应用</el-button>
                 </el-space>
