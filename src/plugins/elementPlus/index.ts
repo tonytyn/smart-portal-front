@@ -14,7 +14,9 @@ import {
   ElSpace,
   ElLink,
   ElButton,
-  ElTag
+  ElTag,
+  ElCollapse,
+  ElCollapseItem
 } from 'element-plus'
 
 const plugins = [ElLoading, ElMessage]
@@ -30,7 +32,9 @@ const components = [
   ElSpace,
   ElLink,
   ElButton,
-  ElTag
+  ElTag,
+  ElCollapse,
+  ElCollapseItem
 ]
 
 export const setupElementPlus = (app: App<Element>) => {

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ContentWrap } from '@/components/ContentWrap'
 import { Dialog } from '@/components/Dialog'
+import { useIcon } from '@/hooks/web/useIcon'
+const icon = useIcon({ icon: 'ep:collection' })
 const msg =
   '应用使用形式1：所有人无需申请即可使用2：用户自己申请，管理员同意后可以使用3：管理员邀请后可以使用'
 const desc =
@@ -10,6 +11,7 @@ const desc =
 //   height: '100px'
 // }
 const tabName = ref('authorized')
+const activeNames = ref(['usual', 'unusual'])
 const dialogVisible = ref(false)
 const viewDetail = () => {
   dialogVisible.value = true
@@ -21,62 +23,73 @@ const enter = () => {
 <template>
   <el-tabs v-model="tabName" type="border-card">
     <el-tab-pane label="已授权" name="authorized">
-      <ContentWrap title="常用">
-        <el-row :gutter="30">
-          <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="3">
-            <el-card shadow="hover" class="mycard">
-              <el-space wrap fill>
-                <span class="title"> 系统名称不能超过一行不然就 </span>
-                <span class="brief">{{ desc }}</span>
-                <span>
-                  <el-link type="primary" @click="viewDetail">详情</el-link>
-                </span>
-                <el-button @click="enter" type="primary" plain>进入应用</el-button>
-              </el-space>
-            </el-card>
-          </el-col>
-          <el-col v-for="index of 7" :key="index" :xs="24" :sm="12" :md="6" :lg="6" :xl="3">
-            <el-card shadow="hover" class="mycard">
-              <el-space wrap fill>
-                <span class="title"> 考勤系统 </span>
-                <span class="brief">{{ desc }}</span>
-                <span>
-                  <el-link type="primary" @click="viewDetail">详情</el-link>
-                </span>
-                <el-button @click="enter" type="primary">进入应用</el-button>
-              </el-space>
-            </el-card>
-          </el-col>
-        </el-row>
-      </ContentWrap>
-      <ContentWrap title="不常用">
-        <el-row>
-          <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="3">
-            <el-card shadow="hover" class="mycard">
-              <el-space wrap fill>
-                <span class="title"> 设备点检系统 </span>
-                <span class="brief">{{ desc }}</span>
-                <span>
-                  <el-link type="primary" @click="viewDetail">详情</el-link>
-                </span>
-                <el-button @click="enter" type="primary">进入应用</el-button>
-              </el-space>
-            </el-card>
-          </el-col>
-        </el-row>
-      </ContentWrap>
+      <el-collapse v-model="activeNames">
+        <el-collapse-item name="usual">
+          <template #title>
+            <span class="text-16px font-700">我的收藏</span>
+          </template>
+          <el-row :gutter="30" style="margin: 12px">
+            <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="3">
+              <el-card shadow="hover" class="mycard">
+                <el-space wrap fill>
+                  <span class="title"> 系统名称不能超过一行不然就 </span>
+
+                  <span class="brief">{{ desc }}</span>
+                  <span>
+                    <el-link type="primary" @click="viewDetail">详情</el-link>
+                  </span>
+                  <el-button @click="enter" type="primary">进入应用</el-button>
+                </el-space>
+              </el-card>
+            </el-col>
+            <el-col v-for="index of 7" :key="index" :xs="24" :sm="12" :md="6" :lg="6" :xl="3">
+              <el-card shadow="hover" class="mycard">
+                <el-space wrap fill>
+                  <span class="title" :icon="icon"> 考勤系统 </span>
+
+                  <span class="brief">{{ desc }}</span>
+                  <span>
+                    <el-link type="primary" @click="viewDetail">详情</el-link>
+                  </span>
+                  <el-button @click="enter" type="primary">进入应用</el-button>
+                </el-space>
+              </el-card>
+            </el-col>
+          </el-row>
+        </el-collapse-item>
+        <el-collapse-item name="unusual">
+          <template #title>
+            <span class="text-16px font-700">全部应用</span>
+          </template>
+          <el-row :gutter="30" style="margin: 12px">
+            <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="3">
+              <el-card shadow="hover" class="mycard">
+                <el-space wrap fill>
+                  <span class="title"> 设备点检系统 </span>
+                  <span class="brief">{{ desc }}</span>
+                  <span>
+                    <el-link type="primary" @click="viewDetail">详情</el-link>
+                  </span>
+                  <el-button @click="enter" type="primary">进入应用</el-button>
+                </el-space>
+              </el-card>
+            </el-col>
+          </el-row>
+        </el-collapse-item>
+      </el-collapse>
+      <!-- </ContentWrap> -->
     </el-tab-pane>
     <el-tab-pane label="未授权" name="unauthorized" style="padding: 20px">
       <el-row :gutter="30">
         <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="3">
           <el-card shadow="hover" class="mycard">
             <el-space wrap fill>
-              <span class="title"> 这个应用您还没有使用权限 </span>
-              <span class="brief">{{ desc }}</span>
+              <span class="title">一个新奇的应用 </span>
+              <span class="brief">这个应用您还没有使用权限,需要联系张三进行权限申请</span>
               <span>
                 <el-link type="primary" @click="viewDetail">详情</el-link>
               </span>
-              <el-button @click="enter" type="primary" plain>申请使用</el-button>
+              <el-button @click="enter" type="primary">申请使用</el-button>
             </el-space>
           </el-card>
         </el-col>
