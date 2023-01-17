@@ -163,7 +163,7 @@ export default {
     exampleEdit: '综合示例 - 编辑',
     exampleDetail: '综合示例 - 详情',
     errorPage: '错误页面',
-    appCenter: '应用中心',
+    application: '应用中心',
     appList: '应用列表',
     appManagement: '应用管理',
 
@@ -494,5 +494,18 @@ export default {
     menuType: '菜单类型',
     page: '页面',
     button: '按钮'
+  },
+  application: {
+    appName: '应用名称',
+    publicKey: '公钥',
+    secretKey: '秘钥',
+    profile: '应用简介',
+    appDetail: '应用详情',
+    applyWay: '申请方式',
+    state: '应用状态',
+    createUser: '创建人',
+    admins: '管理员',
+    createTime: '创建时间',
+    contactWay: '联系方式'
   }
 }
