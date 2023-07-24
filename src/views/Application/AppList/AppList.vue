@@ -30,7 +30,7 @@ const enter = () => {
             <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="3">
               <el-card shadow="hover" class="mycard">
                 <el-space wrap fill>
-                  <span class="title"> 系统名称不能超过一行不然就 </span>
+                  <span class="title"> 系统名称不能超过一行 </span>
 
                   <span class="brief">{{ desc }}</span>
                   <span>
