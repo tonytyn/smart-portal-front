@@ -15,7 +15,7 @@ const viewDetail = () => {
   dialogVisible.value = true
 }
 const enter = () => {
-  console.log(123)
+  console.log('吃了吗')
 }
 </script>
 <template>
