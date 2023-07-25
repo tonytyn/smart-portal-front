@@ -8,7 +8,6 @@ import { Table } from '@/components/Table'
 import { useI18n } from '@/hooks/web/useI18n'
 import { useTable } from '@/hooks/web/useTable'
 import { CrudSchema, useCrudSchemas } from '@/hooks/web/useCrudSchemas'
-// import { TableColumn } from '@/types/table'
 import Create from './components/Create.vue'
 import Detail from './components/Detail.vue'
 import { getAppListApi, createAppApi, deleteAppApi, updateAppApi } from '@/api/application'
@@ -116,6 +115,10 @@ getList()
 const dialogVisible = ref(false)
 
 const dialogType = ref('')
+
+const tonyName = ref('tyn')
+
+console.log(tonyName)
 
 const dialogTitle = ref('')
 
